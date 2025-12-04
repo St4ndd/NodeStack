@@ -1,56 +1,99 @@
- Project Icon # NodeStack ### A Futuristic Minecraft Webpanel
+<div align="center">
+<img src="icon128.png" alt="Project Icon" width="120">
+# NodeStack
+### Next-Gen Minecraft Server Management
 
-Version License Status
+<p align="center">
+  <img src="https://img.shields.io/badge/version-v1.0-1761df?style=for-the-badge" alt="Version">
+  <img src="https://img.shields.io/badge/license-MIT-FF7139?style=for-the-badge" alt="License">
+  <img src="https://img.shields.io/badge/status-stable-9333ea?style=for-the-badge" alt="Status">
+</p>
+<p align="center">
+  <img src="https://img.shields.io/badge/TypeScript-007ACC?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript">
+  <img src="https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=nodedotjs&logoColor=white" alt="Node.js">
+</p>
 
-TypeScript Node.js
+**Futuristic design • Node.js powered • Seamless Minecraft management**
 
-Futuristic Design • Powerful Backend • Intuitive Interface
+<a href="#features">Features</a> • <a href="#installation">Installation</a>
+</div>
 
-Features • Installation
-
+<br>
 ----------
-Features
 
-  ### Futuristic UI
-  - **Sleek Design**: Modern, responsive user interface designed for optimal user experience.
-  - **Customizable Themes**: Personalize your panel with a variety of built-in and custom themes.
-  - **Real-time Updates**: Live server status, console output, and resource monitoring.
+## Features
 
-</td>
-<td width="50%">
+<table>
+  <tr>
+    <td width="50%">
 
-  ### Powerful Backend
-  - **Node.js Core**: High-performance and scalable backend built on Node.js.
-  - **TypeScript**: Robust and maintainable codebase written entirely in TypeScript.
-  - **API Driven**: Integrate with other services and automate tasks with a comprehensive API.
+### Modern UI/UX
+- **Sleek Design**: An intuitive, responsive, and visually appealing interface built for the modern web.
+- **Customizable Themes**: Personalize your panel experience with a variety of built-in themes and color schemes.
+- **Real-time Dashboards**: Get instant insights into your server's health and performance metrics.
 
-</td>
+    </td>
+    <td width="50%">
 
+### Powerful Backend
+- **Node.js Powered**: Leveraging the speed and scalability of Node.js for a performant and efficient panel.
+- **Secure Architecture**: Built with modern security practices to protect your servers and data.
+- **Extensible**: Designed with modularity in mind, making it easy to extend and integrate new features.
+
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+
+### Comprehensive Server Control
+- **Full Lifecycle Management**: Effortlessly start, stop, restart, and kill your Minecraft servers.
+- **Integrated File Manager**: Browse, edit, upload, and download server files directly from the panel.
+- **Console Access**: Real-time server console with input capabilities.
+
+    </td>
+    <td width="50%">
+
+### User & Permissions
+- **Granular Access Control**: Define precise permissions for different users and roles.
+- **Multi-User Support**: Allow multiple users to manage their respective servers or parts of a single server.
+- **Audit Logs**: Keep track of all actions performed by users on the panel.
+
+    </td>
+  </tr>
+</table>
+
+<div align="center">
 ## Installation
+</div>
 
 To get NodeStack up and running, follow these steps:
 
-    Clone the repository:
-
+1.  **Clone the repository:**
+    ```bash
     git clone https://github.com/St4ndd/NodeStack.git
     cd NodeStack
+    ```
 
-    Install dependencies:
-
+2.  **Install dependencies:**
+    ```bash
     npm install
-    # or
-    yarn install
+    # or using yarn
+    # yarn install
+    ```
 
-    Configure Environment Variables:
-    Create a .env file in the root directory based on .env.example and fill in your database credentials and other necessary configurations.
-
-    Build and Run:
-
+3.  **Build the project:**
+    ```bash
     npm run build
+    ```
+
+4.  **Configure Environment Variables:**
+    Create a `.env` file in the root directory and configure necessary variables (e.g., database connection, port). A `.env.example` file might be provided for guidance.
+
+5.  **Start the server:**
+    ```bash
     npm start
-    # or
-    yarn build
-    yarn start
+    # or using pm2 for production
+    # pm2 start dist/index.js --name "nodestack"
+    ```
 
-    The panel should now be running, typically accessible at http://localhost:3000.
-
+NodeStack should now be running! Access it via your browser at the configured port (e.g., `http://localhost:3000`).
