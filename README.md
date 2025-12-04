@@ -92,4 +92,26 @@ To get NodeStack up and running, follow these steps:
     npm run dev
     ```
 
+## Port Forwarding
+
+For NodeStack and the managed Minecraft server to be accessible from the public internet, you must configure **port forwarding** on your router. This directs incoming traffic on specific ports to the machine running NodeStack and the Minecraft server.
+
+### Essential Ports
+
+| Component | Default Port | Description |
+| :--- | :--- | :--- |
+| **Minecraft Server** | **25565** (TCP) | Allows players to connect to your Minecraft game server. |
+| **NodeStack Panel** | **3001** (TCP) | Allows you to access the NodeStack web management interface. |
+
+### Optional Ports (For Common Extensions)
+
+If you use any of the following popular server extensions, you will need to forward their respective default ports as well:
+
+| Extension | Default Port | Description |
+| :--- | :--- | :--- |
+| **Dynmap** | **8123** (TCP) | For the real-time, in-browser map view. |
+| **BlueMap** | **8100** (TCP) | For the 3D, high-performance map viewer. |
+
+> **Note:** The specific steps for port forwarding vary between router models. Consult your router's documentation for detailed instructions. Ensure the ports are forwarded to the **internal IP address** of the machine hosting NodeStack.
+
 NodeStack should now be running! Access it via your browser at the configured port (e.g., `http://localhost:3000`).
