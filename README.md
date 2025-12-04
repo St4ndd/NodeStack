@@ -70,26 +70,24 @@
 
 To get NodeStack up and running, follow these steps:
 
-1.  **Clone the repository:**
-    ```bash
-    git clone [https://github.com/St4ndd/NodeStack.git](https://github.com/St4ndd/NodeStack.git)
-    cd NodeStack
-    ```
+**Clone the repository:**
+```bash
+git clone [https://github.com/St4ndd/NodeStack.git](https://github.com/St4ndd/NodeStack.git)
+cd NodeStack
+```
+**Install dependencies:**
+```bash
+npm install
+```
+**Build the project:**
+```bash
+npm install -g pkg
+npm run make-exe
+```
 
-2.  **Install dependencies:**
-    ```bash
-    npm install
-    ```
-
-3.  **Build the project:**
-    ```bash
-    npm install -g pkg
-    npm run make-exe
-    ```
-    
-4.  **Start the server in dev mode:**
-    ```bash
-    npm run dev
+**Start the server in dev mode:**
+```bash
+npm run dev
     ```
 
 NodeStack should now be running! Access it via your browser at the configured port (e.g., `http://localhost:3000`).
