@@ -115,7 +115,7 @@ If you use any of the following popular server extensions, you will need to forw
 > **Note:** The specific steps for port forwarding vary between router models. Consult your router's documentation for detailed instructions. Ensure the ports are forwarded to the **internal IP address** of the machine hosting NodeStack.
 
 
-NodeStack should now be running! Access it via your browser at the configured port (e.g., `http://localhost:3000`).
+NodeStack should now be running! Access it via your browser at the configured port (e.g., `http://localhost:3001`).
 
 
 ```
