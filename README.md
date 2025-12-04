@@ -119,6 +119,9 @@ NodeStack should now be running! Access it via your browser at the configured po
 
 
 ```
-NodeStack is a solo project, and while I strive for perfection, I recognize that there might be some unconventional code paths. Thank you for understanding!
-Your feedback is invaluable: If you encounter any bugs, run into issues, or have suggestions, please don't hesitate to open an issue or reach out.
+NodeStack is a solo project, and while I strive for perfection, I recognize that there might be some unconventional code paths.
+ Thank you for understanding!
+
+Your feedback is invaluable:
+If you encounter any bugs, run into issues, or have suggestions, please don't hesitate to open an issue or reach out.
 ```
