@@ -1,5 +1,5 @@
 <div align="center">
-<img align="center" src="favicon.png" alt="Project Icon" width="120">
+<img src="favicon.png" alt="Project Icon">
 # NodeStack
 ### Next-Gen Minecraft Server Management
 
