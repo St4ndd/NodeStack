@@ -79,23 +79,17 @@ To get NodeStack up and running, follow these steps:
 2.  **Install dependencies:**
     ```bash
     npm install
-    # or using yarn
-    # yarn install
     ```
 
 3.  **Build the project:**
     ```bash
-    npm run build
+    npm install -g pkg
+    npm run make-exe
     ```
-
-4.  **Configure Environment Variables:**
-    Create a `.env` file in the root directory and configure necessary variables (e.g., database connection, port). A `.env.example` file might be provided for guidance.
-
-5.  **Start the server:**
+    
+4.  **Start the server in dev mode:**
     ```bash
-    npm start
-    # or using pm2 for production
-    # pm2 start dist/index.js --name "nodestack"
+    npm run dev
     ```
 
 NodeStack should now be running! Access it via your browser at the configured port (e.g., `http://localhost:3000`).
