@@ -1514,7 +1514,7 @@ app.get('*', (req, res) => {
 });
 
 httpServer.listen(PORT, () => {
-  log(`NodeStack Backend running on http://localhost:${PORT}`);
+  log(`NodeStack running on http://localhost:${PORT}`);
   if (process.pkg) {
       log(`Running in Executable Mode. Data directory: ${DATA_DIR}`);
   }
