@@ -44,10 +44,6 @@ export const ServerDetail: React.FC<ServerDetailProps> = ({ server, onBack, onDe
   // Java Error State
   const [javaError, setJavaError] = useState<{required: number, installed: number} | null>(null);
 
-  // Pinggy state
-  const [tunnelActive, setTunnelActive] = useState(false);
-  const [tunnelUrl, setTunnelUrl] = useState<string | null>(null);
-
   const logsEndRef = useRef<HTMLDivElement>(null);
   const socketRef = useRef<Socket | null>(null);
 
@@ -94,14 +90,6 @@ export const ServerDetail: React.FC<ServerDetailProps> = ({ server, onBack, onDe
             return newHistory.slice(-60);
          });
        }
-    });
-
-    socket.on('tunnel-status', (data: { id: string, active: boolean, url?: string }) => {
-      if(data.id === server.id) {
-        setTunnelActive(data.active);
-        if(data.url) setTunnelUrl(data.url);
-        else if (!data.active) setTunnelUrl(null);
-      }
     });
 
     socket.on('java-error', (data: { id: string, required: number, installed: number }) => {
@@ -159,19 +147,6 @@ export const ServerDetail: React.FC<ServerDetailProps> = ({ server, onBack, onDe
     setCommand('');
   };
 
-  const startTunnel = () => {
-    socketRef.current?.emit('start-tunnel', { 
-        id: server.id, 
-        port: server.port, 
-        password: server.pinggy?.password, 
-        username: server.pinggy?.username 
-    });
-  };
-
-  const stopTunnel = () => {
-    socketRef.current?.emit('stop-tunnel', { id: server.id });
-  };
-
   const getStatusColor = () => {
     switch (server.status) {
       case 'running': return 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20';
@@ -180,9 +155,7 @@ export const ServerDetail: React.FC<ServerDetailProps> = ({ server, onBack, onDe
     }
   };
 
-  const displayAddress = tunnelActive && tunnelUrl 
-    ? tunnelUrl.replace('tcp://', '')
-    : (server.displayDomain || (server.port === 25565 ? 'localhost' : `localhost:${server.port}`));
+  const displayAddress = server.displayDomain || (server.port === 25565 ? 'localhost' : `localhost:${server.port}`);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(displayAddress);
@@ -331,10 +304,6 @@ export const ServerDetail: React.FC<ServerDetailProps> = ({ server, onBack, onDe
              <NetworkView 
                 server={server} 
                 onUpdateConfig={onUpdateConfig} 
-                tunnelActive={tunnelActive} 
-                tunnelUrl={tunnelUrl} 
-                onStartTunnel={startTunnel}
-                onStopTunnel={stopTunnel}
              />
           )}
           {activeTab === 'plugins' && <PluginsView server={server} />}

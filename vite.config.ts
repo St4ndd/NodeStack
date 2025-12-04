@@ -7,12 +7,17 @@ import path from 'path';
 const startBackend = () => {
   let backend: ChildProcess | undefined;
 
+  const log = (msg: string) => {
+    const time = new Date().toLocaleTimeString('de-DE', { hour12: false });
+    console.log(`[${time}] ${msg}`);
+  };
+
   const runBackend = () => {
     if (backend) {
-      console.log('\x1b[33m%s\x1b[0m', 'Restarting NodeStack Backend...');
+      log('\x1b[33mRestarting NodeStack Backend...\x1b[0m');
       backend.kill();
     } else {
-      console.log('\x1b[36m%s\x1b[0m', 'Starting NodeStack Backend...');
+      log('\x1b[36mStarting NodeStack Backend...\x1b[0m');
     }
 
     backend = spawn('node', ['server.js'], { 
@@ -21,7 +26,7 @@ const startBackend = () => {
     });
 
     backend.on('error', (err) => {
-      console.error('Failed to start backend:', err);
+      console.error(`[${new Date().toLocaleTimeString()}] Failed to start backend:`, err);
     });
   };
 

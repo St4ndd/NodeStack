@@ -16,7 +16,6 @@ export interface ServerConfig {
   displayDomain?: string; // Optional domain for display (e.g. play.myserver.com)
   noIpConfig?: NoIpConfig;
   logHistoryLimit?: number; // Number of lines to load on join
-  pinggy?: PinggyTunnelConfig;
   autoBackup?: AutoBackupConfig;
   autoSave?: AutoSaveConfig;
   activePlayers?: number; // Runtime only
@@ -30,14 +29,6 @@ export interface AutoBackupConfig {
 export interface AutoSaveConfig {
   enabled: boolean;
   interval: number; // in minutes
-}
-
-export interface PinggyTunnelConfig {
-  active?: boolean;
-  url?: string;
-  username?: string;
-  password?: string;
-  autoStart?: boolean;
 }
 
 export interface NoIpConfig {

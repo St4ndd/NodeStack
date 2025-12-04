@@ -12,6 +12,17 @@ const zlib = require('zlib');
 const { NbtReader, parseSNBT } = require('./utils/nbt.js');
 const { RconClient } = require('./utils/rcon.js');
 
+// --- LOGGING HELPER ---
+const log = (msg) => {
+    const time = new Date().toLocaleTimeString('de-DE', { hour12: false });
+    console.log(`[${time}] ${msg}`);
+};
+
+const logError = (msg) => {
+    const time = new Date().toLocaleTimeString('de-DE', { hour12: false });
+    console.error(`[${time}] [ERROR] ${msg}`);
+};
+
 // --- CRITICAL FIX FOR NETWORK/PROXY ENVIRONMENTS ---
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
@@ -181,7 +192,6 @@ if (!fs.existsSync(SERVERS_DIR)) {
 
 // Stores
 const runningServers = new Map();
-const tunnelProcesses = new Map();
 const restartingServers = new Map(); // Stores config of servers waiting to restart
 const runtimeStats = new Map();
 const rconClients = new Map();
@@ -288,7 +298,7 @@ const resolveVanillaUrl = async (versionId) => {
         const versionData = JSON.parse(versionDataRaw);
         return versionData.downloads.server.url;
     } catch (e) {
-        console.error("Vanilla Resolution Error:", e.message);
+        logError(`Vanilla Resolution Error: ${e.message}`);
         throw e;
     }
 };
@@ -303,7 +313,7 @@ const resolvePaperUrl = async (versionId) => {
         const latestBuild = versionData.builds[versionData.builds.length - 1];
         return `https://api.papermc.io/v2/projects/paper/versions/${versionId}/builds/${latestBuild}/downloads/paper-${versionId}-${latestBuild}.jar`;
     } catch (e) {
-        console.error("Paper Resolution Error:", e.message);
+        logError(`Paper Resolution Error: ${e.message}`);
         throw e;
     }
 };
@@ -443,7 +453,7 @@ const startServerInstance = async (config) => {
         return;
     }
 
-    console.log(`Starting server ${config.name} (RAM: ${config.memory}MB)...`);
+    log(`Starting server ${config.name} (RAM: ${config.memory}MB)...`);
     io.emit('status-change', { id: config.id, status: 'starting' });
 
     const serverDir = path.join(DATA_DIR, config.path);
@@ -476,7 +486,7 @@ const startServerInstance = async (config) => {
 
     serverProcess.on('error', (err) => {
         const msg = `[NodeStack] Failed to launch Java: ${err.message}`;
-        console.error(msg);
+        logError(msg);
         io.to(`server-${config.id}`).emit('console-log', { id: config.id, message: msg });
         appendLog(config.path, msg);
         
@@ -501,9 +511,9 @@ const startServerInstance = async (config) => {
            if(rconPort && rconPass) {
                const client = new RconClient('localhost', rconPort, rconPass);
                client.connect().then(() => {
-                   console.log(`RCON connected for ${config.name}`);
+                   log(`RCON connected for ${config.name}`);
                    rconClients.set(config.id, client);
-               }).catch(e => console.error(`RCON connection failed for ${config.name}:`, e.message));
+               }).catch(e => logError(`RCON connection failed for ${config.name}: ${e.message}`));
            }
       }
 
@@ -552,7 +562,7 @@ const startServerInstance = async (config) => {
     });
 
     serverProcess.on('close', (code) => {
-      console.log(`Server ${config.id} stopped with code ${code}`);
+      log(`Server ${config.id} stopped with code ${code}`);
       runningServers.delete(config.id);
       runtimeStats.delete(config.id);
       serverTaskState.delete(config.id);
@@ -566,12 +576,10 @@ const startServerInstance = async (config) => {
       // Explicitly notify console of Stop
       io.to(`server-${config.id}`).emit('console-log', { id: config.id, message: `--- SERVER STOPPED (Code: ${code}) ---` });
       
-      const tunnel = tunnelProcesses.get(config.id);
-      if(tunnel) { tunnel.kill(); tunnelProcesses.delete(config.id); }
 
       // CHECK RESTART FLAG
       if (restartingServers.has(config.id)) {
-        console.log(`Restart flag detected for ${config.id}. Restarting in 5s...`);
+        log(`Restart flag detected for ${config.id}. Restarting in 5s...`);
         const restartConfig = restartingServers.get(config.id);
         restartingServers.delete(config.id);
         
@@ -604,7 +612,7 @@ app.get('/api/minecraft/versions', async (req, res) => {
         }
         res.json({ versions });
     } catch (e) {
-        console.error("Version Fetch Error (using fallback):", e.message);
+        logError(`Version Fetch Error (using fallback): ${e.message}`);
         res.json({ versions: FALLBACK_VERSIONS });
     }
 });
@@ -713,7 +721,7 @@ app.post('/api/plugins/search', async (req, res) => {
         
         res.json({ hits: resp.hits || [] });
     } catch(e) {
-        console.error("Plugin Search Error:", e);
+        logError(`Plugin Search Error: ${e.message}`);
         res.status(500).json({ error: e.message });
     }
 });
@@ -750,7 +758,7 @@ app.post('/api/plugins/install', async (req, res) => {
 
         // 2. Fallback: Generic Search (if strict version match failed)
         if (!versions || versions.length === 0) {
-            console.log(`[Plugin Install] No direct match for ${targetVersionStr}, searching generic...`);
+            log(`[Plugin Install] No direct match for ${targetVersionStr}, searching generic...`);
             // Search without game_versions constraint
             versionsUrl = `https://api.modrinth.com/v2/project/${projectId}/version?loaders=["paper","spigot","bukkit"]`;
             versionsRaw = await fetchExternal(versionsUrl);
@@ -771,11 +779,11 @@ app.post('/api/plugins/install', async (req, res) => {
         
         if(!primaryFile) return res.status(404).json({ error: "No download file found in Modrinth response." });
 
-        console.log(`Installing Plugin: ${primaryFile.filename} from ${primaryFile.url}`);
+        log(`Installing Plugin: ${primaryFile.filename} from ${primaryFile.url}`);
         await downloadFile(primaryFile.url, path.join(pluginsDir, primaryFile.filename));
         res.json({ success: true, fileName: primaryFile.filename });
     } catch(e) {
-        console.error("Plugin Install Error:", e);
+        logError(`Plugin Install Error: ${e.message}`);
         res.status(500).json({ error: e.message });
     }
 });
@@ -978,7 +986,7 @@ app.post('/api/create-server', async (req, res) => {
                 resolvedVersion = manifest.latest.release;
             }
         } catch(e) {
-            console.error("Failed to resolve latest version, defaulting to 1.20.4. Error:", e.message);
+            logError(`Failed to resolve latest version, defaulting to 1.20.4. Error: ${e.message}`);
             resolvedVersion = "1.20.4";
         }
     }
@@ -1010,18 +1018,18 @@ app.post('/api/create-server', async (req, res) => {
         if (data.software === 'paper') downloadUrl = await resolvePaperUrl(resolvedVersion);
         else downloadUrl = await resolveVanillaUrl(resolvedVersion);
         
-        console.log(`Downloading ${data.software} (${resolvedVersion}) from: ${downloadUrl}`);
+        log(`Downloading ${data.software} (${resolvedVersion}) from: ${downloadUrl}`);
         await downloadFile(downloadUrl, path.join(serverPath, 'server.jar'));
         serverConfig.status = 'ready';
         fs.writeFileSync(path.join(serverPath, 'nodestack.json'), JSON.stringify(serverConfig, null, 2));
         res.json({ success: true, id: serverId, path: `servers/${folderName}`, server: serverConfig });
     } catch (dlError) {
-        console.error("Download Error:", dlError);
+        logError(`Download Error: ${dlError.message}`);
         try { fs.rmSync(serverPath, { recursive: true, force: true }); } catch(e){}
         res.status(500).json({ success: false, error: 'Failed to download server jar: ' + dlError.message });
     }
   } catch (error) { 
-      console.error("Create Server Error:", error);
+      logError(`Create Server Error: ${error.message}`);
       res.status(500).json({ success: false, error: error.message }); 
   }
 });
@@ -1150,7 +1158,7 @@ app.post('/api/server/waypoints', (req, res) => {
         res.json({ success: true, waypoints });
 
     } catch(e) {
-        console.error("Server Waypoint Error:", e);
+        logError(`Server Waypoint Error: ${e.message}`);
         res.status(500).json({error: e.message});
     }
 });
@@ -1192,7 +1200,7 @@ app.post('/api/players/waypoints', (req, res) => {
         res.json({ success: true, waypoints: history[playerIdx].waypoints });
 
     } catch(e) {
-        console.error("Waypoint Error:", e);
+        logError(`Waypoint Error: ${e.message}`);
         res.status(500).json({error: e.message});
     }
 });
@@ -1225,7 +1233,7 @@ app.post('/api/players/get-offline-pos', async (req, res) => {
         }
 
     } catch(e) {
-        console.error("Offline Pos Error:", e);
+        logError(`Offline Pos Error: ${e.message}`);
         res.status(500).json({error: e.message});
     }
 });
@@ -1352,7 +1360,7 @@ const updatePlayerHistory = (serverId, playerName, action, serverPath, ip = null
 
     fs.writeFileSync(historyFile, JSON.stringify(history, null, 2));
     io.to(`server-${serverId}`).emit('player-history-update', { history });
-  } catch (e) { console.error("Error updating player history:", e); }
+  } catch (e) { logError(`Error updating player history: ${e.message}`); }
 };
 
 io.on('connection', (socket) => {
@@ -1366,9 +1374,6 @@ io.on('connection', (socket) => {
     } else {
       socket.emit('status-change', { id: serverId, status: 'stopped' });
     }
-    const tunnel = tunnelProcesses.get(serverId);
-    if (tunnel) socket.emit('tunnel-status', { id: serverId, active: true, url: tunnel.cachedUrl || null });
-    else socket.emit('tunnel-status', { id: serverId, active: false });
 
     const files = fs.readdirSync(SERVERS_DIR);
     let serverPathStr = null;
@@ -1396,75 +1401,6 @@ io.on('connection', (socket) => {
       if (stats) socket.emit('player-count', { id, count: stats.count });
     });
   });
-  
-  socket.on('start-tunnel', ({ id, port, password, username }) => {
-    if (tunnelProcesses.has(id)) return;
-    
-    console.log(`Starting tunnel for ${id} on port ${port} using python wrapper`);
-
-    // Using the python wrapper script for more robust handling
-    const pythonCmd = os.platform() === 'win32' ? 'python' : 'python3';
-    
-    const passArg = password || "null";
-    const userArg = username || "null";
-
-    // Use current directory for script location if in exe, or __dirname in dev
-    const scriptBase = process.pkg ? path.dirname(process.execPath) : __dirname;
-    let scriptPath = path.join(scriptBase, 'startpinggy_tcp.py');
-
-    // PKG COMPATIBILITY FIX: Extract script to filesystem if running in PKG and file missing
-    if (process.pkg && !fs.existsSync(scriptPath)) {
-        try {
-            // Read from virtual asset inside snapshot
-            const internalPath = path.join(__dirname, 'startpinggy_tcp.py');
-            if (fs.existsSync(internalPath)) {
-                 const content = fs.readFileSync(internalPath);
-                 fs.writeFileSync(scriptPath, content);
-                 console.log(`Extracted startpinggy_tcp.py for execution to ${scriptPath}`);
-            } else {
-                 console.error("Internal startpinggy_tcp.py not found in snapshot!");
-            }
-        } catch(e) {
-            console.error("Failed to extract pinggy script:", e);
-            // Fallback to internal, hoping python can read it (unlikely for virtual)
-            scriptPath = path.join(__dirname, 'startpinggy_tcp.py');
-        }
-    } else if (!process.pkg) {
-         // Dev mode
-         if (!fs.existsSync(scriptPath)) scriptPath = path.join(__dirname, 'startpinggy_tcp.py');
-    }
-
-    const tunnel = spawn(pythonCmd, [scriptPath, String(port), passArg, userArg], { 
-        stdio: ['pipe', 'pipe', 'pipe'] 
-    });
-
-    tunnel.cachedUrl = null;
-    tunnelProcesses.set(id, tunnel);
-    io.to(`server-${id}`).emit('tunnel-status', { id, active: true, url: null });
-    
-    const handleData = (data) => {
-        const str = data.toString().trim();
-        // Check for specific prefix from python script
-        if (str.includes('PINGGY_URL=')) {
-             const url = str.split('PINGGY_URL=')[1].trim();
-             tunnel.cachedUrl = url;
-             io.to(`server-${id}`).emit('tunnel-status', { id, active: true, url: url });
-        }
-    };
-
-    tunnel.stdout.on('data', handleData);
-    tunnel.stderr.on('data', (d) => {});
-    
-    tunnel.on('close', () => {
-        tunnelProcesses.delete(id);
-        io.to(`server-${id}`).emit('tunnel-status', { id, active: false });
-    });
-  });
-  
-  socket.on('stop-tunnel', ({ id }) => {
-      const proc = tunnelProcesses.get(id);
-      if(proc) proc.kill();
-  });
 
   // Handle Requesting Real-time Player Data for Online Players
   socket.on('get-online-player-data', async ({ id, name }) => {
@@ -1488,7 +1424,7 @@ io.on('connection', (socket) => {
                  socket.emit('player-data-response', { id, name, error: "Player not found or no data returned." });
              }
          } catch(e) {
-             console.error(`RCON Error for ${id}:`, e.message);
+             logError(`RCON Error for ${id}: ${e.message}`);
              socket.emit('player-data-response', { id, name, error: "RCON Communication Error" });
          }
      } else {
@@ -1503,7 +1439,7 @@ io.on('connection', (socket) => {
              await rcon.sendCommand(command);
              appendLog(`servers/${id}`, `> ${command}`); // Log manual command
          } catch(e) {
-             console.error(`RCON Cmd Failed:`, e);
+             logError(`RCON Cmd Failed: ${e.message}`);
              // Fallback to STDIN
              const process = runningServers.get(id);
              if (process) process.stdin.write(command + '\n');
@@ -1556,7 +1492,7 @@ io.on('connection', (socket) => {
          setTimeout(() => {
              if (runningServers.has(config.id) && restartingServers.has(config.id)) {
                  io.to(`server-${config.id}`).emit('console-log', { id: config.id, message: '[NodeStack] Server hang detected. Forcing kill...' });
-                 console.log("Restart hanging, forcing kill...");
+                 log("Restart hanging, forcing kill...");
                  const p = runningServers.get(config.id);
                  if (p) p.kill();
              }
@@ -1578,8 +1514,8 @@ app.get('*', (req, res) => {
 });
 
 httpServer.listen(PORT, () => {
-  console.log(`NodeStack Backend running on http://localhost:${PORT}`);
+  log(`NodeStack Backend running on http://localhost:${PORT}`);
   if (process.pkg) {
-      console.log(`Running in Executable Mode. Data directory: ${DATA_DIR}`);
+      log(`Running in Executable Mode. Data directory: ${DATA_DIR}`);
   }
 });

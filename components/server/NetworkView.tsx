@@ -1,17 +1,13 @@
 import React, { useState } from 'react';
-import { Globe, Router, Copy } from 'lucide-react';
+import { Globe, Copy } from 'lucide-react';
 import { ServerConfig } from '../../types';
 import { Button } from '../Button';
 import { useUI } from '../UI';
 
 export const NetworkView: React.FC<{ 
     server: ServerConfig, 
-    onUpdateConfig: (c: ServerConfig) => void, 
-    tunnelActive: boolean, 
-    tunnelUrl: string | null, 
-    onStartTunnel: () => void, 
-    onStopTunnel: () => void 
-}> = ({ server, onUpdateConfig, tunnelActive, tunnelUrl, onStartTunnel, onStopTunnel }) => {
+    onUpdateConfig: (c: ServerConfig) => void
+}> = ({ server, onUpdateConfig }) => {
     const [domain, setDomain] = useState(server.displayDomain || '');
     const [saving, setSaving] = useState(false);
     const { toast } = useUI();
@@ -57,31 +53,6 @@ export const NetworkView: React.FC<{
                     <Button onClick={handleSave} isLoading={saving} disabled={domain === server.displayDomain}>Save Domain</Button>
                 </div>
                 <p className="text-zinc-500 text-xs mt-2">Set a custom domain for display purposes. You still need to configure DNS records yourself.</p>
-            </div>
-
-            <div className="border-t border-zinc-800 pt-8">
-                <div className="flex items-start justify-between">
-                    <div>
-                        <h3 className="text-lg font-semibold text-white mb-1 flex items-center gap-2"><Router className="w-5 h-5 text-blue-500"/> Public Tunnel</h3>
-                        <p className="text-zinc-400 text-sm max-w-md">
-                            Expose your local server to the internet using a temporary Pinggy tunnel. Great for testing with friends.
-                        </p>
-                    </div>
-                    <div className="flex items-center gap-3">
-                        {tunnelActive && <div className="animate-pulse w-3 h-3 bg-emerald-500 rounded-full"></div>}
-                        <Button variant={tunnelActive ? "danger" : "primary"} onClick={tunnelActive ? onStopTunnel : onStartTunnel}>
-                            {tunnelActive ? "Stop Tunnel" : "Start Tunnel"}
-                        </Button>
-                    </div>
-                </div>
-
-                {tunnelActive && tunnelUrl && (
-                    <div className="mt-6 bg-blue-900/10 border border-blue-500/30 rounded-lg p-4">
-                        <div className="text-blue-200 text-sm font-bold mb-1">Tunnel Active</div>
-                        <div className="text-2xl text-white font-mono select-all">{tunnelUrl.replace('tcp://', '')}</div>
-                        <p className="text-blue-300/60 text-xs mt-2">Share this address with your friends to join.</p>
-                    </div>
-                )}
             </div>
         </div>
     );

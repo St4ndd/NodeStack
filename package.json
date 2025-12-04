@@ -12,7 +12,6 @@
     "scripts": "dist/**/*.js",
     "assets": [
       "dist/**/*",
-      "startpinggy_tcp.py",
       "node_modules/**/*"
     ],
     "targets": [
