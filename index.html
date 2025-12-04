@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NodeStack</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #0f0f12;
+        color: #e4e4e7;
+      }
+      /* Custom scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #18181b; 
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #3f3f46; 
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #52525b; 
+      }
+
+      /* Minecraft Enchantment Glint */
+      @keyframes enchant-glint-anim {
+        0% { background-position: 0% 50%; }
+        100% { background-position: 200% 50%; }
+      }
+
+      .enchanted-glint {
+        background: linear-gradient(
+          -45deg, 
+          rgba(128, 0, 255, 0.0) 30%, 
+          rgba(180, 100, 255, 0.6) 50%, 
+          rgba(128, 0, 255, 0.0) 70%
+        );
+        background-size: 200% 200%;
+        animation: enchant-glint-anim 2.5s linear infinite;
+        mix-blend-mode: color-dodge;
+        pointer-events: none;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.555.0",
+    "socket.io-client": "https://aistudiocdn.com/socket.io-client@^4.7.5",
+    "https": "https://aistudiocdn.com/https@^1.0.0",
+    "url": "https://aistudiocdn.com/url@^0.11.4",
+    "path": "https://aistudiocdn.com/path@^0.12.7",
+    "fs": "https://aistudiocdn.com/fs@^0.0.1-security",
+    "cors": "https://aistudiocdn.com/cors@^2.8.5",
+    "express": "https://aistudiocdn.com/express@^5.1.0",
+    "child_process": "https://aistudiocdn.com/child_process@^1.0.2",
+    "vite": "https://aistudiocdn.com/vite@^7.2.4",
+    "@vitejs/plugin-react": "https://aistudiocdn.com/@vitejs/plugin-react@^5.1.1",
+    "socket.io": "https://aistudiocdn.com/socket.io@^4.8.1",
+    "http": "https://aistudiocdn.com/http@^0.0.1-security",
+    "os": "https://aistudiocdn.com/os@^0.1.2",
+    "zlib": "https://aistudiocdn.com/zlib@^1.0.5",
+    "net": "https://aistudiocdn.com/net@^1.0.2",
+    "crypto": "https://aistudiocdn.com/crypto@^1.0.1"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>

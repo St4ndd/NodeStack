@@ -1,0 +1,5 @@
+{
+  "name": "NodeStack",
+  "description": "A modern Minecraft server management dashboard. Create, configure, and manage server instances.",
+  "requestFramePermissions": []
+}
