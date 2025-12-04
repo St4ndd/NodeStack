@@ -1,20 +1,56 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+ Project Icon # NodeStack ### A Futuristic Minecraft Webpanel
 
-# Run and deploy your AI Studio app
+Version License Status
 
-This contains everything you need to run your app locally.
+TypeScript Node.js
 
-View your app in AI Studio: https://ai.studio/apps/drive/11lwMzDiq0IlztGOza30G8ZvS0l2_LbQA
+Futuristic Design • Powerful Backend • Intuitive Interface
 
-## Run Locally
+Features • Installation
 
-**Prerequisites:**  Node.js
+----------
+Features
 
+  ### Futuristic UI
+  - **Sleek Design**: Modern, responsive user interface designed for optimal user experience.
+  - **Customizable Themes**: Personalize your panel with a variety of built-in and custom themes.
+  - **Real-time Updates**: Live server status, console output, and resource monitoring.
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+</td>
+<td width="50%">
+
+  ### Powerful Backend
+  - **Node.js Core**: High-performance and scalable backend built on Node.js.
+  - **TypeScript**: Robust and maintainable codebase written entirely in TypeScript.
+  - **API Driven**: Integrate with other services and automate tasks with a comprehensive API.
+
+</td>
+
+## Installation
+
+To get NodeStack up and running, follow these steps:
+
+    Clone the repository:
+
+    git clone https://github.com/St4ndd/NodeStack.git
+    cd NodeStack
+
+    Install dependencies:
+
+    npm install
+    # or
+    yarn install
+
+    Configure Environment Variables:
+    Create a .env file in the root directory based on .env.example and fill in your database credentials and other necessary configurations.
+
+    Build and Run:
+
+    npm run build
+    npm start
+    # or
+    yarn build
+    yarn start
+
+    The panel should now be running, typically accessible at http://localhost:3000.
+
